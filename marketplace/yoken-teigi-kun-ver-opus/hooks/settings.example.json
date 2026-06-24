@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.claude.com/schemas/claude-settings.json",
+  "_comment": "Copy to .claude/settings.json. Linux/Mac users may need to change 'python' to 'python3'.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "python .claude/hooks/secret_guard.py" },
+          { "type": "command", "command": "python .claude/hooks/docs_readonly_guard.py" },
+          { "type": "command", "command": "python .claude/hooks/pii_check.py" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "python .claude/hooks/spec_traceability_check.py" },
+          { "type": "command", "command": "python .claude/hooks/post_format.py" }
+        ]
+      }
+    ]
+  }
+}

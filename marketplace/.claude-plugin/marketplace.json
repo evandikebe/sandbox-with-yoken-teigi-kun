@@ -1,0 +1,15 @@
+{
+  "$schema": "https://code.claude.com/schema/marketplace-1.0.json",
+  "name": "yoken-local",
+  "description": "ローカル開発用マーケットプレイス。yoken-teigi-kun-ver-opus を1件だけ収録。",
+  "owner": {
+    "name": "ShunIkebeEv"
+  },
+  "plugins": [
+    {
+      "name": "yoken-teigi-kun-ver-opus",
+      "description": "構成精査→要件定義→基本設計→詳細設計→画面モック→コスト概算→実装までを一気通貫で行うエージェント群。",
+      "source": "./yoken-teigi-kun-ver-opus"
+    }
+  ]
+}

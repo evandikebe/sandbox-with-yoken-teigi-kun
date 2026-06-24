@@ -1,0 +1,14 @@
+{
+  "$comment": "yoken-teigi-kun-ver-opus を起動時に有効化する既定設定。marketplace は /home/node/.yoken-marketplace（entrypoint が git から取得 or 同梱版をseed）。キー名は Claude Code のバージョンで変わりうるため、効かない場合は scripts/install-plugin-into-project.sh の方式Bを使う。",
+  "extraKnownMarketplaces": {
+    "yoken-local": {
+      "source": {
+        "source": "directory",
+        "path": "/home/node/.yoken-marketplace"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "yoken-teigi-kun-ver-opus@yoken-local": true
+  }
+}

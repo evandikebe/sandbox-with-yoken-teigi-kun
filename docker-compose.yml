@@ -1,0 +1,74 @@
+# =============================================================================
+# yoken-teigi-kun-ver-opus サンドボックス
+#   起動例:
+#     docker compose build
+#     docker compose run --rm yoken          # 対話で Claude を起動
+#     docker compose run --rm yoken /login   # 初回ログインだけしたいとき
+#
+#   マウント先 = 起動ディレクトリ:
+#     .env の PROJECT_PATH にホストのプロジェクトパスを設定すると、それが
+#     /workspace にマウントされ、Claude はそのフォルダ内で起動する。
+#     未設定なら同梱の ./workspace が使われる。
+# =============================================================================
+services:
+  yoken:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: yoken-sandbox:latest
+    container_name: yoken-sandbox
+
+    # 許可リスト型ファイアウォール(iptables/ipset)に必要なケーパビリティ
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    # 認証・パス・gitトークンなど。.env.example をコピーして .env を作成
+    env_file:
+      - .env
+
+    environment:
+      YOKEN_FIREWALL: "on"
+      # プラグイン取得元（.env で上書き）。空なら同梱版を使う
+      PLUGIN_REPO_URL: "${PLUGIN_REPO_URL:-}"
+      PLUGIN_REPO_REF: "${PLUGIN_REPO_REF:-}"
+      GITHUB_TOKEN: "${GITHUB_TOKEN:-}"
+
+    volumes:
+      # ★マウント先=起動ディレクトリ:
+      #   PROJECT_PATH（.env）で指定したフォルダを /workspace にマウント。
+      #   未設定時は同梱の ./workspace。パスは / 区切り、スペース/日本語は " " で。
+      - "${PROJECT_PATH:-./workspace}:/workspace"
+
+      # ★node_modules はコンテナ専用に分離（Windows用バイナリの混入を防ぐ）。
+      #   この名前付きvolumeが /workspace/node_modules を覆い、ホスト側とは別物になる。
+      #   アプリが /workspace のサブフォルダにあるなら、その node_modules パスに変える。
+      - yoken-node-modules:/workspace/node_modules
+
+      # git から取得したプラグインを保持（pull を差分化＆再起動で再利用）
+      - yoken-marketplace:/home/node/.yoken-marketplace
+
+      # ログイン情報・設定の永続化（消すと再ログインが必要）
+      - claude-config:/home/node/.claude
+
+    # 起動時の作業ディレクトリ = マウントしたプロジェクト
+    working_dir: /workspace
+
+    # ホストのブラウザから覗くための公開ポート（開発サーバ等）
+    # 左=ホスト / 右=コンテナ。他ポートを足すならここに追記し、
+    # init-firewall.sh の DEV_PORTS（.env）にも同じ番号を入れる。
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+
+    # 対話実行用
+    stdin_open: true
+    tty: true
+
+    # ファイルシステム保護を厚くしたい場合のオプション例:
+    # mem_limit: 4g
+    # pids_limit: 512
+
+volumes:
+  claude-config:
+  yoken-node-modules:
+  yoken-marketplace:

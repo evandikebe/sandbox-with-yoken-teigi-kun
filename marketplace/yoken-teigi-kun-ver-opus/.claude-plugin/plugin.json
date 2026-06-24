@@ -1,0 +1,17 @@
+{
+  "name": "yoken-teigi-kun-ver-opus",
+  "version": "0.9.2",
+  "description": "ITシステムの構成精査→要件定義→基本設計→詳細設計→画面モック→コスト概算→実装までを一気通貫で完成させるエージェント群。設計10体（アンチレビューゲート spec-critic・変更管理 spec-change-manager 含む）+実装9体、セキュリティhooks、案内スキル。セッションを跨ぐ再開プロトコルと仕様変更フロー（CR管理）を備える。質問はチャットに番号付きで提示する対話方式。docs/=設計、src/=コードの厳密分離とgit管理を徹底。",
+  "author": {
+    "name": "ShunIkebeEv"
+  },
+  "keywords": [
+    "requirements",
+    "design",
+    "implementation",
+    "agile",
+    "japanese",
+    "solution-architecture",
+    "cost-estimate"
+  ]
+}

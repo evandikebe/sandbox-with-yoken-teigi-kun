@@ -1,0 +1,8 @@
+.env
+workspace/**
+!workspace/.gitkeep
+**/.git
+**/node_modules
+**/__pycache__
+*.log
+README.md

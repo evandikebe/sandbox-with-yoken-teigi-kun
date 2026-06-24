@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "$TOOL_INPUT に含まれる書き込み内容(file_path と content / new_string)を検査し、以下のルールでブロック可否を判定すること。\n\n1. シークレット混入【ブロック】: APIキー・アクセストークン・秘密鍵・パスワード・AWS/GCP/Azure 等のクレデンシャルがハードコードされていればブロックし、該当箇所を示す。環境変数参照(${ENV}, process.env.X, os.environ[...]) や明らかなダミー値(\"xxx\",\"changeme\",\"example\")は許可。\n\n2. docs/ 保護【ブロック】: file_path が docs/ 配下かつ docs/_impl_state/ 配下でない場合、設計ドキュメントの直接編集としてブロックし、仕様変更は spec-change-manager フローで行うよう促す。docs/_impl_state/・src/・tests/ 等への書き込みは許可。ただし src/ のコードがまだ存在しない設計フェーズでは docs/ への書き込みを許可する。\n\n3. PII【警告のみ・ブロックしない】: 実在しそうな個人情報(氏名+住所・電話番号・メール・マイナンバー等)が含まれる場合、書き込みは許可しつつマスキングを促す警告を出す。\n\n4. @spec トレーサビリティ【警告のみ・ブロックしない】: file_path が src/ 配下で、新規の関数/クラス/エンドポイントを定義しているのに @spec タグ(F-XXX/SC-XXX/EP-XXX/BT-XXX/NF-XXX/IF-XXX を参照)が無い場合、書き込みは許可しつつ @spec 付与を促す警告を出す。\n\nブロックはルール1と2のみ。3と4は許可した上で警告を表示する。該当が無ければ承認する。"
+          }
+        ]
+      }
+    ]
+  }
+}
